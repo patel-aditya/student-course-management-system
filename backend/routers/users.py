@@ -4,11 +4,19 @@ from typing import List
 
 from database import get_db
 from models.user import User
-from schemas.user import UserOut,RoleUpdate
+from schemas.user import UserOut,RoleUpdate,UserCreate
 from dependencies import require_role
 from enums.roles import UserRole
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+@router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(require_role(UserRole.admin))):
+    new_user = User(username=user_data.username, password=user_data.password, role=user_data.role)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user 
 
 @router.get("/", response_model=List[UserOut])
 def get_all_users(db:Session = Depends(get_db), current_user: User = Depends(require_role(UserRole.admin))):

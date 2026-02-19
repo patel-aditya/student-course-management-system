@@ -4,7 +4,7 @@ from sqlalchemy.engine import URL
 
 # 🔹 Database configuration
 
-DATABASE_URL = "postgresql://postgres:Aditya%407879%40DataBase@localhost:5432/student_db"
+DATABASE_URL = "postgresql://postgres:Aditya%407879%40DataBase@localhost:5432/student-db"
 # Change username, password, db name accordingly
 
 
