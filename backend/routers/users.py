@@ -7,12 +7,13 @@ from models.user import User
 from schemas.user import UserOut,RoleUpdate,UserCreate,UserBase
 from dependencies import require_role
 from enums.roles import UserRole
+from core.security import hash_password
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(require_role(UserRole.admin))):
-    new_user = User(username=user_data.username, password=user_data.password, role=user_data.role)
+    new_user = User(username=user_data.username, hashed_password=hash_password(user_data.password), role=user_data.role)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

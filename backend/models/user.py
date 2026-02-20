@@ -12,5 +12,8 @@ class User(Base):
     hashed_password = Column(String)
     role = Column(Enum(UserRole))
 
+    # one teacher -> many courses
+    courses = relationship("Course", back_populates="teacher", cascade="all, delete-orphan")
+
     # one student -> many enrollments
     enrollments = relationship("Enrollment", back_populates="student", cascade="all, delete-orphan")
