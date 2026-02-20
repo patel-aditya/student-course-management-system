@@ -11,7 +11,7 @@ DATABASE_URL = "postgresql://postgres:Aditya%407879%40DataBase@localhost:5432/st
 # 🔹 Create engine
 engine = create_engine(
     DATABASE_URL,
-    echo=True  # shows SQL queries in console (good for development)
+    # echo=True  # shows SQL queries in console (good for development)
 )
 
 

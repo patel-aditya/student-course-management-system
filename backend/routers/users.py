@@ -4,7 +4,7 @@ from typing import List
 
 from database import get_db
 from models.user import User
-from schemas.user import UserOut,RoleUpdate,UserCreate
+from schemas.user import UserOut,RoleUpdate,UserCreate,UserBase
 from dependencies import require_role
 from enums.roles import UserRole
 

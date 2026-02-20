@@ -6,7 +6,7 @@ from database import Base, engine
 from models import user, course, enrollment
 
 # Import routers
-from routers import courses, enrollments, users
+from routers import courses, enrollments, users, auth
 
 
 # Create FastAPI instance
@@ -22,9 +22,10 @@ Base.metadata.create_all(bind=engine)
 
 
 # Include routers
+app.include_router(auth.router)
+app.include_router(users.router)
 app.include_router(courses.router)
 app.include_router(enrollments.router)
-app.include_router(users.router)
 
 
 # Root endpoint (health check)

@@ -4,14 +4,43 @@ from database import get_db
 from models.user import User
 from enums.roles import UserRole
 
-def get_current_user(user_id: int, db: Session = Depends(get_db)):
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from core.security import SECRET_KEY, ALGORITHM
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+
+# get current user from token
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: int = payload.get("sub")
+
+        if user_id is None:
+            raise credentials_exception
+
+    except JWTError:
+        raise credentials_exception
+
     user = db.query(User).filter(User.id == user_id).first()
 
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
-    
+    if user is None:
+        raise credentials_exception
+
     return user
 
+
+# requires specific role
 def require_role(required_role: UserRole):
     def role_checker(current_user: User = Depends(get_current_user)):
         if current_user.role != required_role:

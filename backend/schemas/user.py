@@ -6,12 +6,15 @@ class UserBase(BaseModel):
     username: str
     role: UserRole
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    email: EmailStr
+    username: str
     password: str
+    role: UserRole
 
 class RoleUpdate(BaseModel):
     role: UserRole
-    
+
 class UserOut(UserBase):
     id: int
     class Config:
